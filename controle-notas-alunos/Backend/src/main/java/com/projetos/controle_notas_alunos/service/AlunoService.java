@@ -1,37 +1,54 @@
 package com.projetos.controle_notas_alunos.service;
 
-import java.util.List;
-
+import com.projetos.controle_notas_alunos.model.Aluno;
+import com.projetos.controle_notas_alunos.repository.AlunoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.projetos.controle_notas_alunos.model.Aluno;
-import com.projetos.controle_notas_alunos.repository.AlunoRepository;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AlunoService {
-    
 
     private final AlunoRepository alunoRepository;
 
     @Autowired
-    public AlunoService(AlunoRepository alunoRepository){
+    public AlunoService(AlunoRepository alunoRepository) {
         this.alunoRepository = alunoRepository;
     }
 
-    public Aluno salvar(Aluno aluno){
+    // Salva um aluno no banco de dados
+    public Aluno salvarAluno(Aluno aluno) {
         return alunoRepository.save(aluno);
     }
 
-    public List<Aluno> listarTodos(){
+    // Lista todos os alunos cadastrados
+    public List<Aluno> listarAlunos() {
         return alunoRepository.findAll();
     }
 
-    public Aluno buscarPorId(Long id){
+    // Busca um aluno por ID
+    public Aluno buscarAluno(Long id) {
         return alunoRepository.findById(id).orElse(null);
     }
 
-    public void deletar(Long id){
-        alunoRepository.deleteById(id);
+    // Atualiza um aluno
+    public Aluno atualizarAluno(Long id, Aluno aluno) {
+        if (alunoRepository.existsById(id)) {
+            aluno.setId(id);
+            return alunoRepository.save(aluno);
+        }
+        return null;
+    }
+
+    // Deleta um aluno
+    public boolean deletarAluno(Long id) {
+        if (alunoRepository.existsById(id)) {
+            alunoRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
